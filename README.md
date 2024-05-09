@@ -1,7 +1,7 @@
-Windowed Low-pass Filter Comparison
+Windowed Low-pass Filter Comparison:
 This MATLAB script compares the frequency response of low-pass filters designed using different window functions. Each window function provides different characteristics, and this script aims to illustrate their effects on filter design.
 
-Instructions
+Instructions:
 
 Requirements: 
 This script requires MATLAB installed on your system.
