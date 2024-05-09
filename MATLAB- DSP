@@ -1,0 +1,164 @@
+clc
+clear
+close all
+
+% Kaiser Window(N1)
+% User-specified window and filter parameters
+N1 = 27;         % window length (odd number)
+beta = 3.95224; % beta value for Kaiser window
+Wc = 2/(10/2);  % cutoff frequency (normalized to Nyquist frequency)
+
+% Generate Kaiser window
+w = kaiser(N1, beta);
+
+% Design low-pass filter using Kaiser window and cutoff frequency
+b = fir1(N1-1, Wc, 'low', w);
+
+% Plot frequency response of filter
+[H, f] = freqz(b, 1);
+H_db1 = 20*log10(abs(H));
+f_norm = f/(pi*(10/2));     % normalize frequency axis to pi
+figure
+plot(f_norm, H_db1, 'linewidth', 1.5)
+grid on
+title('Low-pass Kaiser Window Filter')
+xlabel('Frequency (Hz)')
+ylabel('Magnitude (dB)')
+
+% Blackman Window(N2)
+% User-specified window and filter parameters
+
+N2 = 38;         % window length 
+A = 44.796;     % desired sidelobe attenuation in dB
+Wc = 2/(10/2);  % cutoff frequency (normalized to Nyquist frequency)
+
+% Calculate Blackman window parameters
+alpha = (N2-1)/2;
+w = blackman(N2);
+
+% Design low-pass filter using Blackman window and cutoff frequency
+b = fir1(N2-1, Wc, 'low', w);
+
+% Plot frequency response of filter
+[H, f] = freqz(b, 1);
+H_db2 = 20*log10(abs(H));
+f_norm = f/(pi*(10/2));     % normalize frequency axis to pi
+figure
+plot(f_norm, H_db2, 'linewidth', 1.5)
+grid on
+title('Low-pass Blackman Window Filter')
+xlabel('Frequency (Hz)')
+ylabel('Magnitude (dB)')
+
+% Check actual sidelobe attenuation
+H_db_max = max(H_db2);
+H_db_sidelobe = H_db2(H_db2 > H_db_max-A);
+A_actual = H_db_max - max(H_db_sidelobe);
+disp(['Actual sidelobe attenuation: ', num2str(A_actual), ' dB']);
+
+% Hann Window(N3)
+% User-specified window and filter parameters
+N3 = 38;         % window length
+A = 44.796;     % desired sidelobe attenuation in dB
+Wc = 2/(10/2);  % cutoff frequency (normalized to Nyquist frequency)
+
+% Calculate Hann window parameters
+w = hann(N3);
+
+% Design low-pass filter using Hann window and cutoff frequency
+b = fir1(N3-1, Wc, 'low', w);
+
+% Plot frequency response of filter
+[H, f] = freqz(b, 1);
+H_db3 = 20*log10(abs(H));
+f_norm = f/(pi*(10/2));     % normalize frequency axis to pi
+figure
+plot(f_norm, H_db3, 'linewidth', 1.5)
+grid on
+title('Low-pass Hann Window Filter')
+xlabel('Frequency (Hz)')
+ylabel('Magnitude (dB)')
+
+% Check actual sidelobe attenuation
+H_db_max = max(H_db3);
+H_db_sidelobe = H_db3(H_db3 > H_db_max-A);
+A_actual = H_db_max - max(H_db_sidelobe);
+disp(['Actual sidelobe attenuation: ', num2str(A_actual), ' dB']);
+
+% Hamming Window(N4)
+% User-specified window and filter parameters
+N4 = 38;         % window length 
+A = 44.796;     % desired sidelobe attenuation in dB
+Wc = 2/(10/2);  % cutoff frequency (normalized to Nyquist frequency)
+
+% Calculate Hamming window parameters
+w = hamming(N4);
+
+% Design low-pass filter using Hamming window and cutoff frequency
+b = fir1(N4-1, Wc, 'low', w);
+
+% Plot frequency response of filter
+[H, f] = freqz(b, 1);
+H_db4 = 20*log10(abs(H));
+f_norm = f/(pi*(10/2));     % normalize frequency axis to pi
+figure
+plot(f_norm, H_db4, 'linewidth', 1.5)
+grid on
+title('Low-pass Hamming Window Filter')
+xlabel('Frequency (Hz)')
+ylabel('Magnitude (dB)')
+
+% Check actual sidelobe attenuation
+H_db_max = max(H_db4);
+H_db_sidelobe = H_db4(H_db4 > H_db_max-A);
+A_actual = H_db_max - max(H_db_sidelobe);
+disp(['Actual sidelobe attenuation: ', num2str(A_actual), ' dB']);
+
+% Dolph-Chebyshev(N5)
+% User-specified window and filter parameters
+N5 = 38;         % window length (odd number)
+A = 44.796;     % desired sidelobe attenuation in dB
+Wc = 2/(10/2);  % cutoff frequency (normalized to Nyquist frequency)
+delta = 10^(-A/20);   % passband ripple factor
+
+% Calculate Dolph-Chebyshev window parameters
+M = ceil((N5-1)/2);
+k = 0:M;
+alpha = (2*k+1)*pi/(2*M+2);
+beta = acos((delta^(-1/M)-delta^(1/M))/(delta^(-1/M)+delta^(1/M)));
+w = chebwin(N5, A);
+
+% Design low-pass filter using Dolph-Chebyshev window and cutoff frequency
+b = fir1(N5-1, Wc, 'low', w);
+
+% Plot frequency response of filter
+[H, f] = freqz(b, 1);
+H_db5 = 20*log10(abs(H));
+f_norm = f/(pi*(10/2));     % normalize frequency axis to pi
+figure
+plot(f_norm, H_db5, 'linewidth', 1.5)
+grid on
+title('Low-pass Dolph-Chebyshev Window Filter')
+xlabel('Frequency (Hz)')
+ylabel('Magnitude (dB)')
+
+% Check actual sidelobe attenuation
+H_db_max = max(H_db5);
+H_db_sidelobe = H_db5(H_db5 > H_db_max-A);
+A_actual = H_db_max - max(H_db_sidelobe);
+disp(['Actual sidelobe attenuation: ', num2str(A_actual), ' dB']);
+
+% To compare all windows
+figure
+plot(f_norm,H_db1,'linewidth',1.5,'color','r')
+legend('Kaiser window');
+hold on
+plot(f_norm,H_db2,'linewidth',1.5,'color','k')
+hold on
+plot(f_norm,H_db3,'linewidth',1.5)
+hold on
+plot(f_norm,H_db4,'linewidth',1.5,'color','b')
+hold on
+plot(f_norm,H_db5,'linewidth',1.5)
+hold off
+title('All 5 Windows For Comparison');
